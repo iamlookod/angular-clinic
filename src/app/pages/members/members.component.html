@@ -24,14 +24,21 @@
             </ng-template>
           </div>
           <div nz-col nzSpan="12" class="text-right">
-            <button nz-button nzType="primary" [nzSize]="size" nzShape="round">
+            <button
+              nz-button
+              nzType="primary"
+              [nzSize]="size"
+              nzShape="round"
+              (click)="showModal()"
+            >
               <i nz-icon nzType="plus-circle"></i>เพิ่มผู้ป่วย
             </button>
-            <button nz-button nzType="danger" [nzSize]="size" nzShape="round">
+            <!-- <button nz-button nzType="danger" [nzSize]="size" nzShape="round">
               <i nz-icon nzType="minus-circle"></i>ลบผู้ป่วย
-            </button>
+            </button> -->
           </div>
         </div>
+
         <nz-table
           #rowSelectionTable
           nzShowSizeChanger
@@ -42,15 +49,17 @@
           [nzFrontPagination]="false"
           [nzTotal]="pageTotal"
           (nzPageIndexChange)="pageChange($event)"
+          (nzCurrentPageDataChange)="currentPageDataChange($event)"
         >
           <thead (nzSortChange)="onSort($event)" nzSingleSort>
             <tr>
               <th nzShowSort nzSortKey="hn">HN</th>
-              <th nzShowSort nzSortKey="name">ชื่อ-สกลุ</th>
+              <th nzShowSort nzSortKey="name">ชื่อ-สกุล</th>
               <th nzShowSort nzSortKey="address">ที่อยู่</th>
               <th nzShowSort nzSortKey="birtdate">วันเดือนปี เกิด</th>
               <th nzShowSort nzSortKey="disease">โรคประจำตัว</th>
               <th nzShowSort nzSortKey="allegric">แพ้ยา</th>
+              <th>#</th>
             </tr>
           </thead>
           <tbody>
@@ -61,6 +70,29 @@
               <td>{{ data.birtdate }}</td>
               <td>{{ data.disease }}</td>
               <td>{{ data.allegric }}</td>
+              <td>
+                <button
+                  nz-button
+                  nzType="primary"
+                  [nzSize]="size"
+                  nzShape="round"
+                  nzGhost
+                  (click)="showModal(data)"
+                >
+                  <i nz-icon nzType="edit"></i>แก้ไข
+                </button>
+                <!-- <nz-divider nzType="vertical"></nz-divider> -->
+                <button
+                  nz-button
+                  nzType="danger"
+                  [nzSize]="size"
+                  nzShape="round"
+                  nzGhost
+                  (click)="deleteMember(data.hn)"
+                >
+                  <i nz-icon nzType="delete"></i>ลบ
+                </button>
+              </td>
             </tr>
           </tbody>
         </nz-table>
@@ -88,3 +120,109 @@
     </div>
   </div>
 </nz-content>
+
+<ng-template #titleModal>
+  <ng-container *ngIf="!this.validateForm.get('hn').value; else elseTemplate">
+    <i nz-icon nzType="plus-circle"></i> เพิ่มผู้ป่วย
+  </ng-container>
+  <ng-template #elseTemplate>
+    <i nz-icon nzType="edit"></i> แก้ไขผู้ป่วย
+  </ng-template>
+</ng-template>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="titleModal"
+  (nzOnCancel)="handleCancel()"
+>
+  <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="hn">HN</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input
+          nz-input
+          id="hn"
+          formControlName="hn"
+          placeholder="HN"
+          [disabled]="true"
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired
+        >ชื่อ-สกุล</nz-form-label
+      >
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="กรอก ชื่อ-สกุล">
+        <input
+          nz-input
+          id="name"
+          formControlName="name"
+          placeholder="ชื่อ-สกุล"
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="address"
+        >ที่อยู่</nz-form-label
+      >
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input
+          nz-input
+          id="address"
+          formControlName="address"
+          placeholder="ที่อยู่"
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="birtdate"
+        >วันเดือนปีเกิด</nz-form-label
+      >
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-date-picker
+          id="birtdate"
+          formControlName="birtdate"
+        ></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="disease"
+        >โรคประจำตัว</nz-form-label
+      >
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input
+          nz-input
+          id="disease"
+          formControlName="disease"
+          placeholder="โรคประจำตัว"
+        />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="allegric"
+        >แพ้ยา</nz-form-label
+      >
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input
+          nz-input
+          id="allegric"
+          formControlName="allegric"
+          placeholder="แพ้ยา"
+        />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">
+      ยกเลิก
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="submitForm()"
+      [nzLoading]="isOkLoading"
+    >
+      ตกลง
+    </button>
+  </div>
+</nz-modal>

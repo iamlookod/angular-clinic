@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 
 import { MembersRoutingModule } from "./members-routing.module";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MembersComponent } from "./members.component";
 import { MembersService } from "./members.service";
 import { CommonModule } from "@angular/common";
@@ -14,7 +14,9 @@ import {
   NzIconModule,
   NgZorroAntdModule,
   NzGridModule,
-  NzCardModule
+  NzCardModule,
+  NzModalModule,
+  NzMessageService
 } from "ng-zorro-antd";
 
 @NgModule({
@@ -23,17 +25,19 @@ import {
     CommonModule,
     NzButtonModule,
     NzPageHeaderModule,
-    FormsModule,
     NzInputModule,
     NzTableModule,
     NzDropDownModule,
     NzIconModule,
     NgZorroAntdModule,
     NzGridModule,
-    NzCardModule
+    NzCardModule,
+    NzModalModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [MembersComponent],
   exports: [MembersComponent],
-  providers: [MembersService]
+  providers: [MembersService, NzMessageService]
 })
 export class MembersModule {}

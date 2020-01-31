@@ -20,7 +20,6 @@
     "@angular/platform-browser-dynamic": "~8.2.14",
     "@angular/router": "~8.2.14",
     "@types/lodash": "^4.14.149",
-    "lodash": "^4.17.15",
     "lodash-es": "^4.17.15",
     "ng-zorro-antd": "^8.5.2",
     "rxjs": "~6.4.0",

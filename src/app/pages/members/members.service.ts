@@ -15,4 +15,18 @@ export class MembersService {
       })
       .toPromise();
   }
+
+  public async create(data) {
+    return this.http.post("http://localhost:3001/members", data).toPromise();
+  }
+
+  public async delete(hn) {
+    return this.http.delete(`http://localhost:3001/members/${hn}`).toPromise();
+  }
+
+  public async update(data) {
+    return this.http
+      .put(`http://localhost:3001/members/${data.hn}`, data)
+      .toPromise();
+  }
 }
