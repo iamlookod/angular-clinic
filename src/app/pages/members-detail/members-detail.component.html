@@ -1,0 +1,79 @@
+<nz-content>
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <nz-page-header nzTitle="ผู้ป่วย - ประวัติการรักษา"></nz-page-header>
+    </div>
+  </div>
+
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <nz-card>
+        <div nz-row>
+          <div nz-col nzSpan="12" class="text-right">
+            <nz-input-group [nzSuffix]="suffixIconSearch">
+              <input
+                type="text"
+                nz-input
+                placeholder="ค้นหา"
+                [(ngModel)]="searchValue"
+                (ngModelChange)="onSearchChange($event)"
+              />
+            </nz-input-group>
+            <ng-template #suffixIconSearch>
+              <i nz-icon nzType="search"></i>
+            </ng-template>
+          </div>
+        </div>
+
+        <nz-divider></nz-divider>
+
+        <nz-table
+          #rowSelectionTable
+          nzShowSizeChanger
+          [nzData]="memberData"
+          (nzPageSizeChange)="pageSizeChange($event)"
+          [nzSize]="middle"
+          [nzLoading]="isLoading"
+          [nzFrontPagination]="false"
+          [nzTotal]="pageTotal"
+          (nzPageIndexChange)="pageChange($event)"
+          (nzCurrentPageDataChange)="currentPageDataChange($event)"
+        >
+          <thead (nzSortChange)="onSort($event)" nzSingleSort>
+            <tr>
+              <th nzShowSort nzSortKey="hn">HN</th>
+              <th nzShowSort nzSortKey="name">ชื่อ-สกุล</th>
+              <th nzShowSort nzSortKey="address">ที่อยู่</th>
+              <th nzShowSort nzSortKey="birtdate">วันเดือนปี เกิด</th>
+              <th nzShowSort nzSortKey="disease">โรคประจำตัว</th>
+              <th nzShowSort nzSortKey="allegric">แพ้ยา</th>
+              <th>#</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of rowSelectionTable.data">
+              <td>{{ data.hn }}</td>
+              <td>{{ data.name }}</td>
+              <td>{{ data.address }}</td>
+              <td>{{ data.birtdate }}</td>
+              <td>{{ data.disease }}</td>
+              <td>{{ data.allegric }}</td>
+              <td>
+                <button
+                  nz-button
+                  nzType="primary"
+                  [nzSize]="size"
+                  nzShape="round"
+                  nzGhost
+                  routerLink="/members-detail/{{ data.hn }}"
+                >
+                  <i nz-icon nzType="info-circle"></i>ประวัติการรักษา
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-card>
+    </div>
+  </div>
+</nz-content>

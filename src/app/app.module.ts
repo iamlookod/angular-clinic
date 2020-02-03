@@ -10,6 +10,9 @@ import { HttpClientModule } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { registerLocaleData } from "@angular/common";
 import th from "@angular/common/locales/th";
+import { NgProgressModule } from "ngx-progressbar";
+import { GuardsCheckEnd, NavigationEnd } from "@angular/router";
+import { NgProgressRouterModule } from "ngx-progressbar/router";
 
 registerLocaleData(th);
 
@@ -22,7 +25,13 @@ registerLocaleData(th);
     NgZorroAntdModule,
     FormsModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    NgProgressModule,
+    NgProgressRouterModule.withConfig({
+      startEvents: [GuardsCheckEnd],
+      completeEvents: [NavigationEnd],
+      delay: 500
+    })
   ],
   providers: [{ provide: NZ_I18N, useValue: th_TH }],
   bootstrap: [AppComponent]

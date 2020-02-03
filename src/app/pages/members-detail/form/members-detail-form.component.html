@@ -1,7 +1,7 @@
 <nz-content>
   <div nz-row>
     <div nz-col nzSpan="24">
-      <nz-page-header nzTitle="ผู้ป่วย"></nz-page-header>
+      <nz-page-header nzTitle="ประวัติการรักษา"></nz-page-header>
     </div>
   </div>
 
@@ -9,36 +9,31 @@
     <div nz-col nzSpan="24">
       <nz-card>
         <div nz-row>
-          <div nz-col nzSpan="12" class="text-right">
-            <nz-input-group [nzSuffix]="suffixIconSearch">
-              <input
-                type="text"
-                nz-input
-                placeholder="ค้นหา"
-                [(ngModel)]="searchValue"
-                (ngModelChange)="onSearchChange($event)"
-              />
-            </nz-input-group>
-            <ng-template #suffixIconSearch>
-              <i nz-icon nzType="search"></i>
-            </ng-template>
-          </div>
-          <div nz-col nzSpan="12" class="text-right">
-            <button
-              nz-button
-              nzType="primary"
-              [nzSize]="size"
-              nzShape="round"
-              (click)="showModal()"
-            >
-              <i nz-icon nzType="plus-circle"></i>เพิ่มผู้ป่วย
-            </button>
-            <!-- <button nz-button nzType="danger" [nzSize]="size" nzShape="round">
-              <i nz-icon nzType="minus-circle"></i>ลบผู้ป่วย
-            </button> -->
-          </div>
+          <nz-descriptions [nzTitle]="member.hn">
+            <nz-descriptions-item nzTitle="ชื่อ-สกุล">{{
+              member.name
+            }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="ที่อยู่">{{
+              member.address
+            }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="วันเดือนปีเกิด">{{
+              member.birtdate
+            }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="โรคประจำตัว">{{
+              member.disease
+            }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="แพ้ยา">
+              {{ member.allegric }}
+            </nz-descriptions-item>
+          </nz-descriptions>
         </div>
-        <nz-divider></nz-divider>
+      </nz-card>
+    </div>
+  </div>
+
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <nz-card>
         <nz-table
           #rowSelectionTable
           nzShowSizeChanger
@@ -134,7 +129,6 @@
   [(nzVisible)]="isVisible"
   [nzTitle]="titleModal"
   (nzOnCancel)="handleCancel()"
-  [nzWidth]="1080"
 >
   <form nz-form [formGroup]="form" (ngSubmit)="submitForm()">
     <nz-form-item>

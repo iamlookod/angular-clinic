@@ -1,3 +1,4 @@
+<ng-progress #progressbar></ng-progress>
 <nz-layout class="app-layout">
   <nz-sider
     class="menu-sidebar"
@@ -42,6 +43,18 @@
       >
         <i nz-icon nzType="user"></i>
         <span>ผู้ป่วย</span>
+      </li>
+      <li
+        nz-menu-item
+        nz-tooltip
+        nzPlacement="right"
+        nzMatchRouter
+        nzTitle="Members"
+        [nzSelected]="nzTitle === Members"
+        routerLink="/members-detail"
+      >
+        <i nz-icon nzType="user"></i>
+        <span>ประวัติการรักษา</span>
       </li>
       <!-- <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
         <ul>
