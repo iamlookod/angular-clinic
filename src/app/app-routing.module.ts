@@ -26,6 +26,11 @@ const routes: Routes = [
       import("./pages/members-detail/form/members-detail-form.module").then(
         m => m.MembersDetailFormModule
       )
+  },
+  {
+    path: "medicines",
+    loadChildren: () =>
+      import("./pages/medicines/medicines.module").then(m => m.MedicinesModule)
   }
 ];
 

@@ -10,7 +10,7 @@ import { FormGroup } from "@angular/forms";
   styleUrls: ["./members-detail.component.scss"]
 })
 export class MembersDetailComponent implements OnInit {
-  constructor(private membersDetailApi: MembersDetailService) {
+  constructor(private membersDetailService: MembersDetailService) {
     this.searchValueChange
       .pipe(debounceTime(2000), distinctUntilChanged())
       .subscribe(value => {
@@ -37,7 +37,7 @@ export class MembersDetailComponent implements OnInit {
   isOkLoading = false;
 
   async getMembersDetail(query) {
-    this.membersDetail = await this.membersDetailApi.getMembersDetail(query);
+    this.membersDetail = await this.membersDetailService.datatable(query);
 
     this.memberData = [...this.membersDetail.docs];
     this.pageTotal = this.membersDetail.totalDocs;
@@ -85,6 +85,10 @@ export class MembersDetailComponent implements OnInit {
 
   currentPageDataChange($event): void {
     this.memberData = $event;
+  }
+
+  displayBirtDate(value: string) {
+    return this.membersDetailService.formatBirtDate(value);
   }
 
   ngOnInit() {

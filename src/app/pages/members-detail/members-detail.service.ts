@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-// import { MembersDetail } from "./membersDetail";
+import { format, formatDistanceToNow } from "date-fns";
 
 @Injectable({
   providedIn: "root"
@@ -8,7 +8,7 @@ import { HttpClient } from "@angular/common/http";
 export class MembersDetailService {
   constructor(private http: HttpClient) {}
 
-  public async getMembersDetail(query) {
+  public async datatable(query: Object) {
     return this.http
       .post("http://localhost:3001/members/datatable", {
         ...query
@@ -16,17 +16,15 @@ export class MembersDetailService {
       .toPromise();
   }
 
-  public async create(data) {
-    return this.http.post("http://localhost:3001/members", data).toPromise();
-  }
+  formatBirtDate(value: string) {
+    const getBirtDate = format(new Date(value), "dd/MM/yyyy").split("/");
+    getBirtDate[2] = `${Number(getBirtDate[2]) + 543}`;
+    const birtDate = getBirtDate.join("-");
 
-  public async delete(hn) {
-    return this.http.delete(`http://localhost:3001/members/${hn}`).toPromise();
-  }
-
-  public async update(data) {
-    return this.http
-      .put(`http://localhost:3001/members/${data.hn}`, data)
-      .toPromise();
+    let getAge = formatDistanceToNow(new Date(value), {
+      addSuffix: false
+    }).split(" ");
+    const age = getAge[1];
+    return `${birtDate} (${age} ปี)`;
   }
 }

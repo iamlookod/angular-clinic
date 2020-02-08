@@ -1,18 +1,18 @@
 import { Component, OnInit } from "@angular/core";
-import { MembersService } from "./members.service";
+import { MedicinesService } from "./medicines.service";
 import { Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NzMessageService } from "ng-zorro-antd/message";
 
 @Component({
-  selector: "app-members",
-  templateUrl: "./members.component.html",
-  styleUrls: ["./members.component.scss"]
+  selector: "app-medicines",
+  templateUrl: "./medicines.component.html",
+  styleUrls: ["./medicines.component.scss"]
 })
-export class MembersComponent implements OnInit {
+export class MedicinesComponent implements OnInit {
   constructor(
-    private membersServices: MembersService,
+    private medicinesApi: MedicinesService,
     private fb: FormBuilder,
     private message: NzMessageService
   ) {
@@ -20,13 +20,13 @@ export class MembersComponent implements OnInit {
       .pipe(debounceTime(2000), distinctUntilChanged())
       .subscribe(value => {
         this.searchValue = value;
-        this.getMembers(this.query());
+        this.getMedicines(this.query());
       });
   }
 
   form: FormGroup;
   hn = "";
-  members;
+  medicines;
   memberData = [];
   pageTotal = 0;
   pageSize = 10;
@@ -41,19 +41,19 @@ export class MembersComponent implements OnInit {
   isVisible = false;
   isOkLoading = false;
 
-  async getMembers(query) {
-    this.members = await this.membersServices.datatable(query);
+  async getMedicines(query) {
+    this.medicines = await this.medicinesApi.getMedicines(query);
 
-    this.memberData = [...this.members.docs];
-    this.pageTotal = this.members.totalDocs;
+    this.memberData = [...this.medicines.docs];
+    this.pageTotal = this.medicines.totalDocs;
     this.isLoading = false;
   }
 
   deleteMember(hn) {
-    this.membersServices
+    this.medicinesApi
       .delete(hn)
       .then(() => {
-        this.getMembers(this.query());
+        this.getMedicines(this.query());
         this.createMessage("success", "ลบข้อมูลสำเร็จ");
       })
       .catch(() => this.createMessage("error", "ไม่สามารถลบข้อมูล"));
@@ -105,23 +105,23 @@ export class MembersComponent implements OnInit {
     this.isOkLoading = true;
 
     if (!this.form.get("hn").value) {
-      this.membersServices
+      this.medicinesApi
         .create(this.form.getRawValue())
         .then(result => {
           this.isVisible = false;
           this.isOkLoading = false;
           this.createMessage("success", "บันทึกข้อมูลสำเร็จ");
-          this.getMembers(this.query());
+          this.getMedicines(this.query());
         })
         .catch(() => this.createMessage("error", "ไม่สามารถบันทึกข้อมูล"));
     } else {
-      this.membersServices
+      this.medicinesApi
         .update(this.form.getRawValue())
         .then(result => {
           this.isVisible = false;
           this.isOkLoading = false;
           this.createMessage("success", "บันทึกข้อมูลสำเร็จ");
-          this.getMembers(this.query());
+          this.getMedicines(this.query());
         })
         .catch(() => this.createMessage("error", "ไม่สามารถบันทึกข้อมูล"));
     }
@@ -141,17 +141,17 @@ export class MembersComponent implements OnInit {
     this.sortName = $event.key;
     this.sortValue = $event.value;
 
-    this.getMembers(this.query());
+    this.getMedicines(this.query());
   }
 
   pageSizeChange($event): void {
     this.pageSize = $event;
-    this.getMembers(this.query());
+    this.getMedicines(this.query());
   }
 
   pageChange($event): void {
     this.offset = ($event - 1) * this.pageSize;
-    this.getMembers(this.query());
+    this.getMedicines(this.query());
   }
 
   currentPageDataChange($event): void {
@@ -160,10 +160,6 @@ export class MembersComponent implements OnInit {
 
   createMessage(type: string, text: string): void {
     this.message.create(type, text);
-  }
-
-  displayBirtDate(value: string) {
-    return this.membersServices.formatBirtDate(value);
   }
 
   ngOnInit() {
@@ -176,6 +172,6 @@ export class MembersComponent implements OnInit {
       allegric: [null]
     });
 
-    this.getMembers(this.query());
+    this.getMedicines(this.query());
   }
 }
