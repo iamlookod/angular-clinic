@@ -1,8 +1,6 @@
 export interface Medicines {
-  hn: string;
+  _id: string;
   name: string;
-  address: string;
-  birtdate: Date;
-  disease: string;
-  allegric: string;
+  type: string;
+  description: string;
 }

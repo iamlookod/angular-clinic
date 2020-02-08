@@ -42,7 +42,7 @@
         <nz-table
           #rowSelectionTable
           nzShowSizeChanger
-          [nzData]="memberData"
+          [nzData]="medicinesData"
           (nzPageSizeChange)="pageSizeChange($event)"
           [nzSize]="middle"
           [nzLoading]="isLoading"
@@ -53,23 +53,17 @@
         >
           <thead (nzSortChange)="onSort($event)" nzSingleSort>
             <tr>
-              <th nzShowSort nzSortKey="hn">HN</th>
-              <th nzShowSort nzSortKey="name">ชื่อ-สกุล</th>
-              <th nzShowSort nzSortKey="address">ที่อยู่</th>
-              <th nzShowSort nzSortKey="birtdate">วันเดือนปี เกิด</th>
-              <th nzShowSort nzSortKey="disease">โรคประจำตัว</th>
-              <th nzShowSort nzSortKey="allegric">แพ้ยา</th>
+              <th nzShowSort nzSortKey="name">ยา</th>
+              <th nzShowSort nzSortKey="address">ประเภท</th>
+              <th nzShowSort nzSortKey="birtdate">รายละเอียด</th>
               <th>#</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let data of rowSelectionTable.data">
-              <td>{{ data.hn }}</td>
               <td>{{ data.name }}</td>
-              <td>{{ data.address }}</td>
-              <td>{{ data.birtdate }}</td>
-              <td>{{ data.disease }}</td>
-              <td>{{ data.allegric }}</td>
+              <td>{{ data.type }}</td>
+              <td>{{ data.description }}</td>
               <td>
                 <button
                   nz-button
@@ -88,7 +82,7 @@
                   [nzSize]="size"
                   nzShape="round"
                   nzGhost
-                  (click)="deleteMember(data.hn)"
+                  (click)="deleteMedicine(data._id)"
                 >
                   <i nz-icon nzType="delete"></i>ลบ
                 </button>
@@ -122,7 +116,7 @@
 </nz-content>
 
 <ng-template #titleModal>
-  <ng-container *ngIf="!this.form.get('hn').value; else elseTemplate">
+  <ng-container *ngIf="!this.form.get('_id').value; else elseTemplate">
     <i nz-icon nzType="plus-circle"></i> เพิ่มผู้ป่วย
   </ng-container>
   <ng-template #elseTemplate>
@@ -138,78 +132,35 @@
 >
   <form nz-form [formGroup]="form" (ngSubmit)="submitForm()">
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="hn">HN</nz-form-label>
-      <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input
-          nz-input
-          id="hn"
-          formControlName="hn"
-          placeholder="HN"
-          [disabled]="true"
-        />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired
-        >ชื่อ-สกุล</nz-form-label
+        >ชื่อยา</nz-form-label
       >
-      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="กรอก ชื่อ-สกุล">
-        <input
-          nz-input
-          id="name"
-          formControlName="name"
-          placeholder="ชื่อ-สกุล"
-        />
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="ชื่อยา">
+        <input nz-input id="name" formControlName="name" placeholder="ชื่อยา" />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="address"
-        >ที่อยู่</nz-form-label
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="type">ประเภท</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input nz-input id="type" formControlName="type" placeholder="ประเภท" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="description"
+        >รายละเอียด</nz-form-label
       >
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <input
           nz-input
-          id="address"
-          formControlName="address"
-          placeholder="ที่อยู่"
+          id="description"
+          formControlName="description"
+          placeholder="รายละเอียด"
         />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="birtdate"
-        >วันเดือนปีเกิด</nz-form-label
-      >
       <nz-form-control [nzSm]="14" [nzXs]="24">
-        <nz-date-picker
-          id="birtdate"
-          formControlName="birtdate"
-        ></nz-date-picker>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="disease"
-        >โรคประจำตัว</nz-form-label
-      >
-      <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input
-          nz-input
-          id="disease"
-          formControlName="disease"
-          placeholder="โรคประจำตัว"
-        />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="allegric"
-        >แพ้ยา</nz-form-label
-      >
-      <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input
-          nz-input
-          id="allegric"
-          formControlName="allegric"
-          placeholder="แพ้ยา"
-        />
+        <input nz-input id="_id" formControlName="_id" type="hidden" />
       </nz-form-control>
     </nz-form-item>
   </form>

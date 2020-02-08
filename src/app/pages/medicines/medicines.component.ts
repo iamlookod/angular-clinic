@@ -25,9 +25,8 @@ export class MedicinesComponent implements OnInit {
   }
 
   form: FormGroup;
-  hn = "";
   medicines;
-  memberData = [];
+  medicinesData = [];
   pageTotal = 0;
   pageSize = 10;
   offset = 0;
@@ -41,15 +40,15 @@ export class MedicinesComponent implements OnInit {
   isVisible = false;
   isOkLoading = false;
 
-  async getMedicines(query) {
+  async getMedicines(query: Object) {
     this.medicines = await this.medicinesApi.getMedicines(query);
 
-    this.memberData = [...this.medicines.docs];
+    this.medicinesData = [...this.medicines.docs];
     this.pageTotal = this.medicines.totalDocs;
     this.isLoading = false;
   }
 
-  deleteMember(hn) {
+  deleteMedicine(hn: string) {
     this.medicinesApi
       .delete(hn)
       .then(() => {
@@ -91,12 +90,10 @@ export class MedicinesComponent implements OnInit {
   showModal(data): void {
     if (data)
       this.form.setValue({
-        hn: data.hn,
+        _id: data._id,
         name: data.name,
-        address: data.address,
-        birtdate: data.birtdate,
-        disease: data.disease,
-        allegric: data.allegric
+        type: data.type,
+        description: data.description
       });
     this.isVisible = true;
   }
@@ -104,7 +101,7 @@ export class MedicinesComponent implements OnInit {
   handleOk(): void {
     this.isOkLoading = true;
 
-    if (!this.form.get("hn").value) {
+    if (!this.form.get("_id").value) {
       this.medicinesApi
         .create(this.form.getRawValue())
         .then(result => {
@@ -115,6 +112,7 @@ export class MedicinesComponent implements OnInit {
         })
         .catch(() => this.createMessage("error", "ไม่สามารถบันทึกข้อมูล"));
     } else {
+      console.log(this.form.getRawValue());
       this.medicinesApi
         .update(this.form.getRawValue())
         .then(result => {
@@ -155,7 +153,7 @@ export class MedicinesComponent implements OnInit {
   }
 
   currentPageDataChange($event): void {
-    this.memberData = $event;
+    this.medicinesData = $event;
   }
 
   createMessage(type: string, text: string): void {
@@ -164,12 +162,10 @@ export class MedicinesComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      hn: [{ value: null, disabled: true }],
+      _id: [null],
       name: [null, [Validators.required]],
-      address: [null],
-      birtdate: [null],
-      disease: [null],
-      allegric: [null]
+      type: [null],
+      description: [null]
     });
 
     this.getMedicines(this.query());
